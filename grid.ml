@@ -77,7 +77,7 @@ let parse () =
             incr id; (* so, id is always a fresh sequence number *)
             ret
           in
-          let add_intersection h v =
+          let add_intersection h v j =
             (* add an edge to the undirected graph... *)
             let hp, vp = j - h.j, i - v.i in (* relative to the start... *)
             h.inter <- (hp, v, vp) :: h.inter;
@@ -91,7 +91,7 @@ let parse () =
               (* manually handle the intersection since it's at j-1... *)
               (match cur_ver.(j - 1) with
               | None -> ()
-              | Some v -> add_intersection h v);
+              | Some v -> add_intersection h v (j - 1));
               Some h
             | Some x ->
               (* concatenate the current character *)
@@ -111,7 +111,7 @@ let parse () =
             | v -> v);
           (* check for intersection *)
           (match ch', cur_ver.(j) with
-          | Some h, Some v -> add_intersection h v
+          | Some h, Some v -> add_intersection h v j
           | _ -> ());
           (* process the next column *)
           g ch' (j + 1)
