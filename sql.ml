@@ -37,12 +37,12 @@ let of_grid l =
   let f (sel, f, w) (Wrap ({id; s; _} as t)) =
     let rec fields acc i =
       if i = String.length s then
-        List.rev acc (* user-readable output... *)
+        "CONCAT(" ^ cc (List.rev acc) ^ ")" (* user-readable output... *)
       else
         fields (field ~id i :: acc) (i + 1)
     in
     let f' = dict (String.length s) ^ " " ^ word id in
-    sel @ fields [] 0, f' :: f, w @ cond_of_t t
+    (fields [] 0 ^ " " ^ word id) :: sel, f' :: f, w @ cond_of_t t
   in
   let select, from, where = List.fold_left f ([], [], []) l in
   let where =
@@ -67,23 +67,34 @@ let insert_word w =
   "INSERT INTO " ^ dict l ^ "(" ^ cc n ^ ") VALUES(" ^ cc v ^ ");"
 
 let create_dictionary l =
-  let rec f (n, k) i =
+  let rec f (d, p, k) i =
     if i = l then
       (* we could actually reverse everything, but... *)
-      List.rev n, k
+      List.rev d, List.rev p, k
     else
-      let k' = "xxx" :: k in (* FIXME read the docs! *)
-      f ((nth i ^ " CHAR NOT NULL") :: n, k') (i + 1)
+      let d' = (nth i ^ " CHAR NOT NULL") :: d in
+      let p' = nth i :: p in
+      let k' = ("INDEX(" ^ nth i ^ ")") :: k in
+      f (d', p', k') (i + 1)
   in
-  let n, k = f ([], []) 0 in
-  "CREATE TABLE " ^ dict l ^ "(" ^ cc n ^ ") " ^ String.concat " " k
+  let d, p, k = f ([], [], []) 0 in
+  let d = cc d in
+  let p = "PRIMARY KEY(" ^ cc p ^ ")" in
+  let k = cc k in
+  "CREATE TABLE IF NOT EXISTS " ^ dict l ^ "(" ^ d ^ ", " ^ p ^ ", " ^ k ^ ");"
 
 let import_words l =
   (* create tables *)
   List.map String.length l |>
+  List.filter ((>=) 16) |> (* MySQL doesn't support indexes over >16 fields *)
   List.sort_uniq compare |>
   List.map create_dictionary |>
   List.iter print_endline;
   (* insert words *)
-  List.map insert_word l |>
+  List.filter (fun x -> String.length x <= 16) l |>
+  List.map insert_word |>
   List.iter print_endline
+
+let print_endline s =
+  (* FIXME prevent SQL injections *)
+  print_endline ("SELECT '" ^ s ^ "';")

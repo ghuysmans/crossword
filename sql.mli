@@ -9,3 +9,6 @@ val create_dictionary: int -> string
 
 (** Create and populate indexed dictionary tables *)
 val import_words: string list -> unit
+
+(** Issue a dumb SELECT to print something *)
+val print_endline: string -> unit
