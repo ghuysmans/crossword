@@ -1,8 +1,12 @@
-let read_lines () =
+let read_until_empty () =
   let rec f acc =
     try
-      f (read_line () :: acc)
+      let l = read_line () in
+      if l = "" then
+        acc
+      else
+        f (l :: acc)
     with End_of_file ->
       acc
   in
-  f []
+  List.rev (f [])
