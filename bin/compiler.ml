@@ -1,3 +1,5 @@
+open Crossword
+
 let import () =
   Util.read_until_empty () |>
   Sql.import_words

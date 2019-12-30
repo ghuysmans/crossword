@@ -1,0 +1,4 @@
+(executable
+ (name compiler)
+ (public_name crossword)
+ (libraries crossword cmdliner))

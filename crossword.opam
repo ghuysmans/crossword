@@ -1,0 +1,14 @@
+opam-version: "1.2"
+name: "crossword"
+version: "0.1"
+maintainer: "Guillaume Huysmans <ghuysmans99@gmail.com>"
+authors: "Guillaume Huysmans <ghuysmans99@gmail.com>"
+homepage: "https://github.com/ghuysmans/crossword/"
+bug-reports: "https://github.com/ghuysmans/crossword/issues"
+dev-repo: "git://github.com/ghuysmans/crossword/"
+build: [["dune" "build" "-p" name "-j" jobs]]
+synopsis: "Crossword compiler (SQL engine stress test)"
+depends: [
+  "dune" {build}
+  "cmdliner"
+]

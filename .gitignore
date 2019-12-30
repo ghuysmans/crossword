@@ -1,4 +1,3 @@
 _build/
-*.byte
-
-*.swp
+*.merlin
+*.sql

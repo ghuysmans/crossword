@@ -1,4 +1,4 @@
 all:
-	ocamlbuild -use-ocamlfind crossword.byte
+	dune build crossword.exe
 clean:
-	ocamlbuil -clean
+	dune clean
