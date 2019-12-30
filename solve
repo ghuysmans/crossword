@@ -1,0 +1,2 @@
+#!/bin/sh
+dune exec -- bin/compiler.exe sql <$1 |sqlite3 /tmp/crossword.db

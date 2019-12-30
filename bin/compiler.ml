@@ -9,7 +9,7 @@ let compile bare =
   let t = Grid.parse () in
   t |> List.iter (fun (Grid.Wrap {Grid.id; s; i; j; orientation; _}) ->
     let o = Grid.string_of_o orientation in
-    Sql.print_endline (Printf.sprintf "#%d\\t(%d,%d)\\t%s\\t*%s" id i j o s
+    Sql.print_endline (Printf.sprintf "#%d\t(%d,%d)\t%s\t*%s" id i j o s
   ));
   print_endline (Sql.of_grid t)
 

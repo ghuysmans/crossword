@@ -1,3 +1,4 @@
 _build/
 *.merlin
 *.sql
+data/words.txt

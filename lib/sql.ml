@@ -32,12 +32,13 @@ let cond_of_t {id; s; inter; _} =
   f [] 0 @ j
 
 let cc = String.concat ", "
+let concat l = "(" ^ String.concat " || " l ^ ")"
 
 let of_grid l =
   let f (sel, f, w) (Wrap ({id; s; _} as t)) =
     let rec fields acc i =
       if i = String.length s then
-        "CONCAT(" ^ cc (List.rev acc) ^ ")" (* user-readable output... *)
+        concat (List.rev acc) (* user-readable output... *)
       else
         fields (field ~id i :: acc) (i + 1)
     in
@@ -77,11 +78,10 @@ let create_dictionary l =
       let k' = ("INDEX(" ^ nth i ^ ")") :: k in
       f (d', p', k') (i + 1)
   in
-  let d, p, k = f ([], [], []) 0 in
+  let d, p, _ = f ([], [], []) 0 in
   let d = cc d in
   let p = "PRIMARY KEY(" ^ cc p ^ ")" in
-  let k = cc k in
-  "CREATE TABLE IF NOT EXISTS " ^ dict l ^ "(" ^ d ^ ", " ^ p ^ ", " ^ k ^ ");"
+  "CREATE TABLE IF NOT EXISTS " ^ dict l ^ "(" ^ d ^ ", " ^ p ^ ");"
 
 let import_words l =
   (* create tables *)
